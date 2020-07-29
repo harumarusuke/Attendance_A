@@ -1,6 +1,7 @@
-<% provide(:title, "") %>
+<% provide(:title, "Top") %>
 <div class = "center jumbotron">
    <h1>勤怠システム</h1>
-   <p>アカウント作成は<%= link_to "こちら", "#", class: "btn btn-lg btn-primary" %>から</p>
+   <%= link_to "ログイン", signup_path, class: "btn btn-lg btn-primary" %>
+   <p>アカウント作成は<%= link_to "こちら", "#" %>から</p>
    
 </div>
