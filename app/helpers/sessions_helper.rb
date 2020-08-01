@@ -37,8 +37,29 @@ module SessionsHelper
     end
   end
   
-  def logged_in?
-    !current_user.nil?
+  # 渡されたユーザーがログイン済みのユーザーであればtrueを返す
+  def current_user?(user)
+    user == current_user
+  end
+  
+  
+  def logged_in? # ?はtrueかfalseで返す
+    !current_user.nil? # current_user.nil?はログインしてたらfalseで返す
+  end                  # それだとあとの処理で都合が悪いので!をつけて
+                       # ログインしてたらtrueで返すようにしてる
+                       # trueで返すとif文を１行で終わらせることが可能になる
+                       # log_out if logged_in?のようにログインしてたらログアウトをする
+
+  
+  # 記憶しているURLniリダイレクト
+  def redirect_back_or(default_url)
+    redirect_to(session[:forwarding_url] || default_url)
+    session.delete(:forwarding_url)
+  end
+  
+  # アクセスしようとしたURLを記憶。getリクエストのみを記憶
+  def store_location
+    session[:forwarding_url] = request.original_url if request.get?
   end
   
 end
