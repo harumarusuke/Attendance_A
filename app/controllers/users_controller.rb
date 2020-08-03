@@ -3,13 +3,18 @@ class UsersController < ApplicationController
   before_action :logged_in_user, only: [:show, :edit, :update, :index, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:destroy, :edit_basic_info, :update_basic_info]
+  before_action :set_one_month, only: :show
   
   def index
     @users = User.paginate(page: params[:page])
+    #@users = query.order(:id).page(params[:page])
+
   end
   
-  def show
-    
+  def show        #Date.current当日取得　biginning_of_monthはRailsのメソッド
+    #@first_day = Date.current.beginning_of_month
+    #@last_day = @first_day.end_of_month #end_of_monthは当月の終日を取得(30日,31日は判断してくれる)
+    @worked_sum = @attendances.where.not(started_at: nil).count
   end
   
   
