@@ -66,10 +66,6 @@ class UsersController < ApplicationController
   
   private
   
-    def set_user
-      @user = User.find(params[:id]) #パラムスハッシュからユーザーを取得する
-    end
-  
     def user_params
       params.require(:user).permit(:name, :email, :department, :password, :password_confirmation)
     end
@@ -78,23 +74,4 @@ class UsersController < ApplicationController
       params.require(:user).permit(:department, :basic_time, :work_time)
     end
     
-    def logged_in_user
-      unless logged_in?  #unlseeはfalseで返された場合のみに中を実行する
-        store_location
-        flash[:danger]= "ログインしてください。"
-        redirect_to login_url
-      end
-    end
-    
-    def correct_user
-      @user = User.find(params[:id]) #beforeアクションでは各アクションが実行される
-                                     #直前に処理がされるので@userの定義が必要
-      redirect_to(root_url) unless current_user?(@user)
-    end                            # 上のcurrent_user?()はセッションヘルパーメソッドから
-    
-    def admin_user
-      redirect_to root_url unless current_user.admin?
-    end
-      
-  
 end
