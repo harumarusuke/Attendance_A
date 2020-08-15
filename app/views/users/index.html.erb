@@ -1,10 +1,10 @@
 <% provide(:title, 'All Users') %>
-<% provide(:class_text, 'user_show') %>
+<% provide(:class_text, 'user-show') %>
 <% provide(:button_text, '編集する') %>
 
 <h1>ユーザー一覧</h1>
 
-<%= form_with(url:csv_import_users_path, local: true) do |f| %>
+<%= form_with(url: csv_import_users_path, local: true) do |f| %>
   <%= f.file_field :file, accept:'.csv', class: "field-info" %>
   <%= f.submit "CSVをインポート", class: "btn btn-primary btn-import" %>
 <% end %>
@@ -12,27 +12,33 @@
 <br>
 
 <% @users.each do |user| %>
-  <%= user.name %>
-
+  <% unless user.admin? %>
+    <%= user.name %>
+  <% end %>
   <div>
-    <%= link_to "削除", user, method: :delete,data: { confirm: "#{user.name}を削除してよろしいですか？"},
-                                                    class: "btn btn-primary" %> <!-- dataから　アラート表示 -->
+    <% if current_user.admin? && !current_user?(user) %>
+      <%= link_to "削除", user, method: :delete,data: { confirm: "#{user.name}を削除してよろしいですか？"},
+          class: "btn btn-primary" %> <!-- dataから　アラート表示 -->
+    <% end %>
   </div>
-
-  <div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#demo">編集</button>
-        </h4>
-      </div>
-      <div id="demo" class="collapse">
-        <div class="row">
-          <div class="col-md-6 col-md-offset-3">
-             <%= render 'user_attendance_a', object: @users %>
+  <% unless user.admin? %>
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#list<%= user.id %>">編集</button>
+          </h4>
+        </div>
+        <div id="list<%= user.id %>" class="panel-collapse collapse">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <%= render partial: 'user_a', locals: { user: user } %>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 <% end %>

@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-  
-                        #ユーザーが削除されると関連する勤怠データも削除する(dependent:依存)
+
+                      #ユーザーが削除されると関連する勤怠データも削除する(dependent:依存)
   has_many :attendances, dependent: :destroy
   # 「remember_token」という仮想の属性を作成します。
   attr_accessor :remember_token
@@ -14,6 +14,13 @@ class User < ApplicationRecord
   validates :department, length: { in: 2..30}, allow_blank: true #空白の時、バリデーションをスルーする
   validates :basic_time, presence: true
   validates :work_time, presence: true
+  validates :affiliation, length: { in: 2..10}, allow_blank: true
+  validates :employee_number, presence: true
+  validates :uid, length: { in: 1..5}, allow_blank: true
+  validates :basic_work_time, presence: true
+  validates :designated_work_start_time, presence: true
+  validates :designated_work_end_time, presence: true
+
   has_secure_password
   validates :password, presence: true, length: {minimum: 6}, allow_nil: true
   
@@ -49,5 +56,18 @@ class User < ApplicationRecord
   def forget
     update_attribute(:remember_digest, nil)
   end
-
+  
+  def self.import(file)
+    CSV.foreach(file.path, headers: true, skip_blanks: true) do |row|
+      user = new
+      user.attributes = row.to_hash.slice(*updatable_attributes)
+      user.save!
+    end
+  end
+  
+  def self.updatable_attributes
+    ["name", "email", "affiliation", "employee_number", "uid", "basic_work_time",
+     "designated_work_start_time", "designated_work_end_time", "superior", "admin", "password"]
+  end
+  
 end

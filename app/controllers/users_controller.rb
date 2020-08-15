@@ -7,7 +7,31 @@ class UsersController < ApplicationController
   
   def index
     @users = User.all
-    #@users = query.order(:id).page(params[:page])
+    if params[:name].present?
+      @users = @users.get_by_name params[:name]
+    end
+    if params[:id].present?
+      @user = User.find_by(id: @users.id)
+    else
+      @user = User.new
+    end
+    #@users = User.all
+    #if params[:id].present?
+      #@user = User.find(params[:id])
+    #else
+      #@user = User.new
+    #end
+  end
+  
+  def csv_import
+    if params[:file].blank?
+      flash[:danger] = "CSVファイルを選択して下さい。"
+      redirect_to usurs_url
+    else
+      User.import(params[:file])
+      flash[:success] = "CSVファイルをインポートしました"
+      redirect_to users_url(@user)
+    end
   end
   
   def show        #Date.current当日取得　biginning_of_monthはRailsのメソッド
@@ -37,9 +61,9 @@ class UsersController < ApplicationController
   end
   
   def update
-    if @user.update_attributes(user_params)
-      flash[:success] = "ユーザー情報を更新に成功しました。"
-      redirect_to @user
+    if @user.update_attributes(basic_a_info_params)
+      flash[:success] = "#{@user.name}の情報を更新しました。"
+      redirect_to users_url(@user)
     else
       render :edit
     end
@@ -63,6 +87,15 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
   
+  def update_a_info
+    if @user.update_attributes(basic_a_info_params)
+      flash[:success] = "#{@user.name}の基本情報を更新しました。"
+    else
+      flash[:danger] = "#{@user.name}の更新に失敗しました。<br>" + @user.errors.full_messages.join("<br>")
+    end
+    redirect_to users_url
+  end
+  
   private
   
     def user_params
@@ -73,4 +106,8 @@ class UsersController < ApplicationController
       params.require(:user).permit(:department, :basic_time, :work_time)
     end
     
+    def basic_a_info_params
+      params.require(:user).permit(:name, :email, :affiliation, :employee_number, :uid,
+                     :password, :basic_work_time, :designated_work_start_time, :designated_work_end_time)
+    end
 end

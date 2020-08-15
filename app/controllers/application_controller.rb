@@ -23,8 +23,10 @@ class ApplicationController < ActionController::Base
   def correct_user
     @user = User.find(params[:id]) #beforeアクションでは各アクションが実行される
                                    #直前に処理がされるので@userの定義が必要
-    redirect_to(root_url) unless current_user?(@user)
-  end                            # 上のcurrent_user?()はセッションヘルパーメソッドから
+    if !current_user.admin?
+      redirect_to(root_url) unless current_user?(@user)
+    end                            # 上のcurrent_user?()はセッションヘルパーメソッドから
+  end                           
 
   # ページ出力前に1ヶ月分のデータの存在を確認・セットします。
   def set_one_month 

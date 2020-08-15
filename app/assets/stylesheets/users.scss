@@ -51,12 +51,15 @@
   }  
 }
 
-.label-user_show {
+.label-user-show {
   margin-top: 5px;
+  padding: 0.5em;
+  width: max;
 }
 
-.btn-user_show {
+.btn-user-show {
   margin-top: 10px;
+ 
 }
 
 
@@ -72,6 +75,8 @@
   width: 30%;
 }
 
+
+/* csvインポート */
 .field-info{
   border: 1px solid #d3d3d3;
 }
