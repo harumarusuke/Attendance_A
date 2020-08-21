@@ -1,14 +1,14 @@
 /* ユーザー情報テーブル */
 
 .user-table {
-  vertical-align: middle;
   text-align: center;
+  vertical-align: middle;
+  border-collapse: collapse;
 }
 
 /* ユーザー情報下ボタン */
 
 .btn-users-show {
-  margin-top: -10px;
   margin-bottom: 10px;
 }
 
@@ -86,3 +86,9 @@
   width: 19em;
 }
 
+
+.table-user-office{
+  text-align: center;
+  font-weight: bold;
+  margin: auto;
+}

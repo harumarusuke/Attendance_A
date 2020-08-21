@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
-  before_action :logged_in_user, only: [:show, :edit, :update, :index, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :set_user, only: [:user_all_office, :show, :edit, :update, :destroy, :edit_basic_info, :update_basic_info]
+  before_action :logged_in_user, only: [:user_all_office, :show, :edit, :update, :index, :destroy, :edit_basic_info, :update_basic_info]
   before_action :correct_user, only: [:edit, :update]
   before_action :admin_user, only: [:index,:destroy, :edit_basic_info, :update_basic_info]
-  before_action :set_one_month, only: :show
-  
+  before_action :set_one_month, only: [:show, :user_all_office]
+
   def index
     @users = User.all
     if params[:name].present?
@@ -26,7 +26,7 @@ class UsersController < ApplicationController
   def csv_import
     if params[:file].blank?
       flash[:danger] = "CSVファイルを選択して下さい。"
-      redirect_to usurs_url
+      redirect_to users_url(@user)
     else
       User.import(params[:file])
       flash[:success] = "CSVファイルをインポートしました"
@@ -95,6 +95,13 @@ class UsersController < ApplicationController
     end
     redirect_to users_url
   end
+  
+  def user_all_office
+    @users = Attendance.all.includes(:user) 
+  end
+  
+  def basic_information
+  end 
   
   private
   

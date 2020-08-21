@@ -13,6 +13,8 @@ Rails.application.routes.draw do
       patch 'update_a_info'
       get 'attendances/edit_one_month'
       patch 'attendances/update_one_month'
+      get 'user_all_office'
+      get 'basic_information'
     end
     collection { post :csv_import }
     resources :attendances, only: :update
